@@ -636,6 +636,95 @@ Do not collapse view models into `Contracts` just because the API returns simila
 
 Likewise, do not move DTO-to-entity mappings into `Mvc`, because that would make the frontend depend conceptually on backend persistence models.
 
+## ViewModel And DTO Design
+
+View models and DTOs represent different boundaries and must be shaped for their own consumers. Do not mirror domain entities or EF relationships mechanically.
+
+### ViewModels
+
+A view model represents the state and interactions required by a browser view.
+
+Use composition when the UI displays or edits a related concept as a structured object:
+
+```csharp
+public ImageViewModel? ProfileImage { get; set; }
+```
+
+Do not duplicate a composed value as a flattened property in the same view model without a separate UI need. For example, avoid exposing both `ProfileImage.Url` and `ProfileImageUrl` when both represent the same input.
+
+Expose a related entity ID alongside its composed view model only when the UI needs the ID independently, typically to select or replace an existing shared resource:
+
+```csharp
+public int MembershipPlanId { get; set; }
+public MembershipPlanViewModel? MembershipPlan { get; set; }
+```
+
+In this example:
+
+- `MembershipPlanId` binds the selected value of a form control such as a `<select>`.
+- `MembershipPlan` provides the related data needed for display.
+- The plan is an independently existing, shared resource selected by reference.
+
+Do not expose the related ID merely because the domain entity or database has a foreign key. If the UI edits a child concept directly and the backend owns its lifecycle, composition is normally sufficient:
+
+```csharp
+public ImageViewModel? ProfileImage { get; set; }
+```
+
+An image ID would be justified in the view model only if the UI had a concrete interaction that used it, such as selecting an existing image from a media library or addressing the image as an independent resource.
+
+Additional view model rules:
+
+- Keep validation and display metadata aligned with the browser interaction.
+- Nullable composition represents an optional related concept.
+- Do not use `virtual` on view model properties unless a presentation framework requires a verified behavior from it; MVC view models do not use EF lazy loading.
+- If one model accumulates conflicting requirements for list, details, create, and edit screens, split it into operation-specific view models instead of adding duplicate convenience properties.
+
+### DTOs
+
+A DTO represents an HTTP operation, not the complete UI state and not the persistence model.
+
+Prefer operation-specific DTOs because read and write operations commonly require different shapes:
+
+- Read DTOs may contain nested DTOs when consumers need enriched related data.
+- Create and update DTOs should contain only values accepted by that operation.
+- Use scalar IDs in write DTOs when the operation associates an independently existing resource.
+- Use direct or flattened editable values when the backend owns the lifecycle of a composed child resource.
+
+For example, a member read response may contain a nested image:
+
+```csharp
+public ImageReadDto? ProfileImage { get; set; }
+```
+
+Its update request may accept only the editable URL:
+
+```csharp
+public string? ProfileImageUrl { get; set; }
+```
+
+The mapping at the MVC boundary translates `ViewModel.ProfileImage.Url` to `UpdateDto.ProfileImageUrl`. The backend then creates, updates, removes, or associates the domain `Image` according to the use case.
+
+This distinction prevents transport contracts from exposing persistence identifiers that the client does not need and avoids allowing callers to associate arbitrary child records by ID.
+
+### Relationship Decision Guide
+
+Before adding both a related ID and a related object, answer these questions:
+
+1. Is the related object an independently existing resource selected by the user?
+2. Does the form need its ID for a control value, route, command, or explicit association?
+3. Does the UI also need the related object's descriptive data?
+4. Is the child instead edited as part of its owner, with lifecycle managed by the backend?
+
+Use the following outcomes:
+
+- Existing shared resource selected by reference: use the ID for writes and the composed object for reads when both UI needs exist.
+- Owner-managed optional child edited directly: use composition in the view model and accept only editable values in the write DTO.
+- Independently addressable child: expose its ID only when the use case actually addresses or selects it.
+- Different screens need substantially different shapes: define separate view models or DTOs rather than forcing one model to serve every operation.
+
+IDs in DTOs or view models are never an authorization mechanism. The API must still verify tenant ownership and whether the referenced resource may be associated with the target entity.
+
 ## Multi-Tenancy
 
 Multi-tenancy is a real architectural concern throughout the backend.
