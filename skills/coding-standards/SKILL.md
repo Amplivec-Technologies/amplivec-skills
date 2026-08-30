@@ -253,6 +253,66 @@ foreach (var item in items)
 
 Never omit braces because a control flow structure currently contains only one statement.
 
+### Prefer Explicit Control Flow
+
+Prioritize simple and explicit control flow over concise but dense expressions.
+
+It is acceptable to use more lines when they make each decision and possible outcome easier to understand.
+
+Do not combine several responsibilities in a single condition when separate branches would be clearer. This includes combinations of:
+
+- Null checking.
+- Type checking or pattern matching.
+- Variable declaration.
+- Business-rule validation.
+- Selection of the value to return.
+
+Prefer one clear decision per `if`, early returns, and explicit branches for a small set of known alternatives.
+
+Do not introduce an interface cast or pattern-matching expression solely to make the control flow shorter when the concrete cases are already known.
+
+Incorrect:
+
+```csharp
+Person? person = user.Employee ?? (Person?)user.Member;
+
+if (person is ITenantable tenantable &&
+    tenantable.OrganizationId != user.OrganizationId)
+{
+    throw new KeyNotFoundException();
+}
+
+return person;
+```
+
+Correct:
+
+```csharp
+if (user.Employee != null)
+{
+    if (user.Employee.OrganizationId != user.OrganizationId)
+    {
+        throw new KeyNotFoundException();
+    }
+
+    return user.Employee;
+}
+
+if (user.Member != null)
+{
+    if (user.Member.OrganizationId != user.OrganizationId)
+    {
+        throw new KeyNotFoundException();
+    }
+
+    return user.Member;
+}
+
+return null;
+```
+
+Compact constructs remain appropriate when they express a single, immediately understandable decision. The goal is not to prohibit pattern matching or compound conditions, but to avoid using them when they obscure the actual branches of the behavior.
+
 ## Blank Lines
 
 Do not leave blank lines immediately after an opening brace.

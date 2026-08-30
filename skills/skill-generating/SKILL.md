@@ -9,6 +9,24 @@ Use this skill whenever creating, modifying, restructuring, or reviewing an Agen
 
 All generated skills must comply with the official Agent Skills specification published at https://agentskills.io/specification, in addition to the Amplivec-specific conventions defined below.
 
+## Canonical skill repository
+
+Always modify Amplivec skills in the canonical `amplivec-skills` repository.
+
+When another repository consumes `amplivec-skills` through a Git submodule, symbolic link, configuration reference, synchronized copy, vendored directory, or generated local skill directory, never edit that representation inside the consuming repository.
+
+Before modifying a skill:
+
+1. Locate the `amplivec-skills` repository in the same parent directory as the active project.
+2. Verify that the target skill exists under its canonical `skills/` directory.
+3. Apply the modification to the canonical repository only.
+
+Do not assume a specific name for the directory that contains the repositories. Given any parent directory `<workspace>`, if `<workspace>/<project>` consumes skills from the standalone checkout at `<workspace>/amplivec-skills`, modify `<workspace>/amplivec-skills/skills/<skill-name>/SKILL.md`. Any path below `<workspace>/<project>` is a consumer path and must not be modified for this purpose.
+
+For example, Membriana may expose consumed skills below `membriana/.opencode/skills/`. Those paths are project-local representations; the canonical files remain under the standalone `amplivec-skills/skills/` repository.
+
+If the canonical `amplivec-skills` repository is unavailable, stop and ask the user how to proceed. Do not fall back to modifying a project-local copy.
+
 ## Agent Skills specification
 
 Every skill created or modified under Amplivec must comply with the official Agent Skills specification:
@@ -211,15 +229,16 @@ When asked to create a new skill:
 
 When asked to modify an existing skill:
 
-1. Read the complete existing `SKILL.md` before making structural decisions.
-2. Preserve instructions unrelated to the requested modification.
-3. Check whether the existing skill complies with the current Agent Skills specification.
-4. Check whether it complies with Amplivec naming and formatting conventions.
-5. Integrate the requested behavior into the most appropriate existing section instead of blindly appending new sections.
-6. Remove or rewrite rules that would directly contradict the requested behavior.
-7. Avoid duplicating equivalent instructions.
-8. Preserve useful references, scripts, assets, and metadata.
-9. Verify the resulting skill as a complete artifact rather than validating only the changed fragment.
+1. Resolve the skill in the canonical `amplivec-skills` repository.
+2. Read the complete existing `SKILL.md` before making structural decisions.
+3. Preserve instructions unrelated to the requested modification.
+4. Check whether the existing skill complies with the current Agent Skills specification.
+5. Check whether it complies with Amplivec naming and formatting conventions.
+6. Integrate the requested behavior into the most appropriate existing section instead of blindly appending new sections.
+7. Remove or rewrite rules that would directly contradict the requested behavior.
+8. Avoid duplicating equivalent instructions.
+9. Preserve useful references, scripts, assets, and metadata.
+10. Verify the resulting skill as a complete artifact rather than validating only the changed fragment.
 
 Do not perform unrelated semantic changes merely because other improvements are possible.
 
