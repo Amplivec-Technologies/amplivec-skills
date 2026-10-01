@@ -214,7 +214,7 @@ if(condition)
 
 Single-line control flow structures are prohibited.
 
-All control flow structures must use braces, even when their body contains only one statement.
+In languages that use braces to delimit blocks, all control flow structures must use braces, even when their body contains only one statement. In languages such as Python, use the native block syntax with the body on subsequent indented lines.
 
 This applies to structures such as:
 
@@ -226,11 +226,11 @@ This applies to structures such as:
 - `do`
 - Other equivalent control flow structures
 
-The opening brace must be placed on a separate line.
+Place opening and closing braces according to the language-specific defaults in the **Braces** section. Do not apply C# brace placement universally.
 
-The body of the structure must begin on the line following the opening brace.
+In brace-based languages, the body of the structure must begin on the line following the opening brace. An opening brace on the same line as the header does not make the structure a prohibited single-line structure; placing the body on that same line does.
 
-Correct:
+Correct for C# using the default Allman style:
 
 ```csharp
 if (condition)
@@ -252,7 +252,7 @@ if (condition)
     Execute();
 ```
 
-Incorrect:
+Incorrect for C# using the default Allman style:
 
 ```csharp
 if (condition) {
@@ -260,7 +260,7 @@ if (condition) {
 }
 ```
 
-The same rule applies to other control flow structures.
+The same requirement to use multiline bodies applies to other control flow structures. The following examples use C# brace placement; use the corresponding language's style in other languages.
 
 Correct:
 
@@ -289,7 +289,7 @@ foreach (var item in items)
 }
 ```
 
-Never omit braces because a control flow structure currently contains only one statement.
+In brace-based languages, never omit braces because a control flow structure currently contains only one statement.
 
 ### Prefer Explicit Control Flow
 
@@ -540,11 +540,23 @@ if (condition)
 
 ## Braces
 
-Align all braces with their corresponding block.
+Unless the user or project explicitly requires a different brace style, prioritize the standard, most widely recognized style of the language and its ecosystem.
 
-Lines containing braces must contain only the brace.
+Use these defaults:
 
-Correct:
+- **C#:** use Allman style, with opening and closing block braces on separate lines aligned with the declaration or control-flow header.
+- **JavaScript and TypeScript:** use 1TBS (One True Brace Style, also called Egyptian braces), with the opening block brace at the end of the header's final line.
+- **Other languages with an established convention:** follow their official style guide or most widely adopted community convention. When several styles are equally conventional, follow the project's or framework's established style.
+- **Brace-based languages without an established convention:** use Allman as the fallback, aligning opening and closing block braces on separate lines.
+- **Languages without block braces, such as Python:** use their native block syntax. Do not introduce braces to imitate another language.
+
+Apply the selected block style consistently to functions, methods, constructors, classes, control flow structures, and block-bodied lambdas or anonymous functions. The separate rules for indentation, multiline bodies, and blank lines still apply.
+
+### Allman: C# and Fallback
+
+Place opening and closing block braces on their own lines, aligned with the corresponding declaration or control-flow header. Start the body on the next line and indent it one level.
+
+Correct for C#:
 
 ```csharp
 public void Execute()
@@ -553,7 +565,7 @@ public void Execute()
 }
 ```
 
-Incorrect:
+Incorrect for C# using the default Allman style:
 
 ```csharp
 public void Execute() {
@@ -561,9 +573,39 @@ public void Execute() {
 }
 ```
 
-Use braces for every block structure, regardless of the number of statements it contains.
+### 1TBS: JavaScript and TypeScript
 
-This requirement applies to control flow structures, methods, constructors, and other blocks.
+Place the opening block brace on the same line as the declaration or control-flow header, separated by a space. If the header spans multiple lines, put the brace at the end of the final header line. Start the body on the next line and indent it one level.
+
+Place the closing brace on its own line, aligned with the start of the declaration or control-flow header. Associated clauses follow that closing brace on the same line: `} else {`, `} else if (...) {`, `} catch (...) {`, `} finally {`, and `} while (...);` for `do`/`while`. Required punctuation may follow a closing brace, as in `};` or `});`.
+
+Correct for JavaScript:
+
+```javascript
+function processCustomer(customer) {
+	if (customer !== null) {
+		saveCustomer(customer);
+	} else {
+		showMissingCustomer();
+	}
+}
+```
+
+Correct for a JavaScript callback:
+
+```javascript
+customers.forEach((customer) => {
+	processCustomer(customer);
+});
+```
+
+Do not force Allman placement on JavaScript or TypeScript unless it is explicitly required. Using 1TBS does not permit single-line control flow bodies.
+
+### Syntax and Non-Block Braces
+
+Brace-placement rules for blocks do not require every brace in source code to occupy its own line. For object literals, destructuring, named imports, and initializer expressions, follow the language's syntax and idiomatic formatting.
+
+Preserve semantics when wrapping expressions. In JavaScript, do not place a line break immediately after `return` before its expression; automatic semicolon insertion can change the behavior. Keep the expression on that line or begin a parenthesized multiline expression on that line.
 
 ## Line Length
 
