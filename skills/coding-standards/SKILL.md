@@ -376,6 +376,37 @@ public void ProcessItems()
 
 Do not introduce blank lines solely because a control flow structure begins or ends a scope.
 
+### Blank Lines Around Multiline Statements
+
+Apply this rule in every programming language, including C#, Python, and JavaScript.
+
+Declarations, definitions, assignments, and expression statements that span multiple lines must be visually separated from adjacent statements in the same enclosing scope. This includes collection and object initializers, chained calls, and statements containing multiline lambdas, arrow functions, or anonymous functions, whether split for line length or readability.
+
+- Leave exactly one blank line before the complete statement when another statement precedes it in the same scope.
+- Leave exactly one blank line after the complete statement when another statement follows it in the same scope.
+- Do not add a blank line before it when it is the first statement in its scope.
+- Do not add a blank line after it when it is the last statement in its scope.
+- If it is the only statement in its scope, do not add blank lines on either side.
+- Between consecutive multiline statements or a multiline statement and a control flow structure, use exactly one blank line, not two.
+
+Treat the entire declaration, assignment, or expression as one logical statement, including its closing delimiters and terminator. Do not insert blank lines between continuation lines, initializer elements, arguments, or successive closing delimiters solely because the statement is multiline. Apply the same rules independently to statements inside a lambda or anonymous function body.
+
+Example:
+
+```javascript
+const title = "Resumen";
+
+const rows = [
+	["Alquiler mensual", rent],
+	["Expensas mensuales", expenses],
+];
+
+const formatRow = row =>
+	row.join(": ");
+
+RenderRows(title, rows, formatRow);
+```
+
 ### Blank Lines After Closing Braces
 
 Leave a blank line after a closing brace when another independent statement or structure follows within the same scope.
@@ -441,6 +472,8 @@ This requirement applies to control flow structures, methods, constructors, and 
 Source code lines must not exceed the maximum line length defined by the Amplivec coding standards.
 
 When a condition, method invocation, expression, declaration, or other statement would exceed that limit, split it across multiple lines while preserving readability and indentation.
+
+Apply the blank-line rules for multiline statements to the resulting statement.
 
 Do not keep an excessively long condition on a single line.
 
