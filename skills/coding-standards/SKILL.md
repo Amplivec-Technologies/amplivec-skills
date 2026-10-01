@@ -11,7 +11,15 @@ When editing existing code, apply these rules to the code being changed. Do not 
 
 ## Naming Conventions
 
-Use the following naming conventions:
+Unless the user or project explicitly specifies a different naming convention, prioritize the standard, most widely recognized naming conventions of the language and its ecosystem.
+
+Apply this principle to functions, methods, variables, parameters, fields, properties, constants, types, modules, and files. Do not impose one language's naming conventions on another language. In particular, the C# conventions below are not universal requirements for JavaScript, Python, or other languages.
+
+When several naming styles are conventional in a language, follow the established convention of the project or framework. For languages not listed here, use their official style guide or the most widely adopted community convention.
+
+### C#
+
+Use the following conventions for C# unless explicitly overridden:
 
 - Local variables must use `camelCase`.
 - Private fields must use `camelCase` prefixed with an underscore (`_`).
@@ -35,7 +43,37 @@ public void CalculateTotal()
 }
 ```
 
-When creating a class, its file name should match the class name whenever possible.
+When creating a C# class, its file name should match the class name whenever possible.
+
+### JavaScript and TypeScript
+
+Use the following conventions unless explicitly overridden:
+
+- Variables, parameters, functions, methods, fields, and ordinary object properties use `camelCase`.
+- Classes and constructor functions use `PascalCase`. TypeScript types and interfaces also use `PascalCase`.
+- Symbolic constants may use `UPPER_SNAKE_CASE` when appropriate for the project. Do not uppercase every identifier merely because it is declared with `const`.
+- Follow the project's private-member convention, such as native `#privateField` syntax. Do not introduce an underscore prefix solely because C# uses it.
+- Follow the project's or framework's established file-naming convention rather than automatically assigning `PascalCase` to every JavaScript or TypeScript file.
+
+Examples: `calculateQuote`, `rentCents`, `quote.premiumCents`, `QuoteCalculator`, and `PAYMENT_DISCOUNT_PERCENT`.
+
+### Python
+
+Use the following conventions unless explicitly overridden:
+
+- Variables, parameters, functions, methods, attributes, and properties use `snake_case`.
+- Classes use `PascalCase` (the `CapWords` convention in PEP 8).
+- Constants use `UPPER_SNAKE_CASE`.
+- Non-public members conventionally use a leading underscore, as in `_total_amount`.
+- Modules use short lowercase names, with underscores where they improve readability. Packages conventionally use short lowercase names without underscores.
+
+Examples: `calculate_quote`, `rent_cents`, `quote.premium_cents`, `QuoteCalculator`, and `PAYMENT_DISCOUNT_PERCENT`.
+
+### Existing Names and External Contracts
+
+Preserve names required by language syntax, standard libraries, frameworks, third-party APIs, serialization formats, and other external contracts. Do not rename them merely to normalize casing. Limit other naming changes to the requested scope and update all affected references consistently.
+
+These language-specific naming defaults do not override the separate formatting and whitespace rules in this skill.
 
 ## Language
 
@@ -464,7 +502,7 @@ const rows = [
 const formatRow = row =>
 	row.join(": ");
 
-RenderRows(title, rows, formatRow);
+renderRows(title, rows, formatRow);
 ```
 
 ### Blank Lines After Closing Braces
