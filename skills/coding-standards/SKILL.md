@@ -617,6 +617,18 @@ Apply the blank-line rules for multiline statements to the resulting statement.
 
 Do not keep an excessively long condition on a single line.
 
+## HTML Formatting
+
+When creating, modifying, refactoring, or reviewing HTML documents or partials, read and apply [HTML formatting conventions](references/html-formatting.md).
+
+- Use two spaces per markup nesting level and per attribute or text continuation level. This is an HTML-specific exception to the general tab-indentation rule; it does not change indentation rules for other languages.
+- Expand structural containers and separate independent controls, fields, navigation links, and repeated items into readable source lines. Make parent-child relationships visible through indentation.
+- Prefer separate opening and closing lines for expanded containers, with closing tags aligned to their opening element's indentation level.
+- Keep short text-only elements, coherent inline fragments, and empty paired elements compact when appropriate. Do not interpret the standard as an absolute prohibition on multiple tags appearing on one line.
+- Wrap long opening tags between complete attributes, indent continuation lines by two spaces, and keep `>` with the final attribute. Do not require one attribute per line or invent a numeric line-length limit.
+- Use blank lines to separate major sections or logical groups, not every HTML element. Do not apply the blank-line rules for programming-language statements mechanically to markup.
+- Preserve rendered text, meaningful inline whitespace, attribute values, element order, and behavior when formatting. Formatting alone does not authorize changing copy, removing fallbacks, or modifying functionality.
+
 ## Existing Code
 
 When modifying existing code:
