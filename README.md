@@ -19,6 +19,38 @@ Instead of duplicating common instructions and practices across repositories, th
 
 Project-specific knowledge should remain in the corresponding product repository.
 
+## Setup
+
+Add this repository as a Git submodule from the root of the project that will consume the shared resources:
+
+```bash
+git submodule add https://github.com/mrmalvicino/amplivec-skills.git amplivec-skills
+```
+
+The `amplivec-skills` argument is the destination directory within the consuming project.
+Adjust it to match the project's structure and use that path in subsequent commands.
+Shared skills are available under `amplivec-skills/skills/`.
+
+If you use OpenCode, use `.opencode` as the submodule destination instead:
+
+```bash
+git submodule add https://github.com/mrmalvicino/amplivec-skills .opencode
+```
+
+This makes the shared skills available under `.opencode/skills/` for OpenCode to discover. Use `.opencode` in place of `amplivec-skills` in the update commands below.
+
+When cloning a project that already includes the submodule, initialize it along with the project:
+
+```bash
+git clone --recurse-submodules <project-repository-url>
+```
+
+For an existing clone, run this from the project root. Repeat it after pulling changes or switching branches to ensure the local submodule matches the reference recorded by the project, rather than continuing to use an older checkout of Amplivec Skills:
+
+```bash
+git submodule update --init --recursive
+```
+
 ## Guiding principles
 
 Resources maintained here should follow a few basic principles:
@@ -39,6 +71,10 @@ Engineering decisions and conventions should be documented rather than depending
 Standards are expected to change as Amplivec and its products mature.
 
 ## Contributing
+
+To add or modify skills, work in a separate clone of the [source repository](https://github.com/mrmalvicino/amplivec-skills), not in the submodule directory of a consuming project.
+Submit changes to the source repository first.
+Once merged, update the submodule reference in each consuming project as described in Setup.
 
 When adding a new resource:
 
