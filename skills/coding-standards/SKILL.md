@@ -1,6 +1,6 @@
 ---
 name: coding-standards
-description: Apply Amplivec coding style and naming conventions when creating, modifying, refactoring, or reviewing source code.
+description: Apply Amplivec coding style, naming conventions, and IDE-compatible formatting when creating, modifying, refactoring, or reviewing source code and formattable project files. Leave the result unchanged by the project's Format Document operation in VS Code or Visual Studio.
 ---
 
 # Amplivec Coding Standards
@@ -8,6 +8,18 @@ description: Apply Amplivec coding style and naming conventions when creating, m
 Apply these conventions whenever creating, modifying, refactoring, or reviewing source code in an Amplivec project.
 
 When editing existing code, apply these rules to the code being changed. Do not perform unrelated formatting changes unless explicitly requested.
+
+## IDE-Compatible Formatting
+
+For every formattable file in the requested scope, leave the saved result as if **Format Document** had already been applied: right-click **Format Document** in VS Code, or **Ctrl+K, Ctrl+D** in Visual Studio Community. Running that operation again must produce no new changes, including whitespace and end-of-file changes.
+
+Before formatting, read [IDE formatter compatibility and verification](references/ide-formatting.md). Identify the actual formatter, language mode, version, and effective settings for each file type. These commands invoke language-specific providers; they do not define one universal layout shared by all IDEs or extensions.
+
+Use explicit user requirements and project formatting configuration first, then the established IDE formatter profile, then this skill's fallback layout rules. For mechanical layout, the verified formatter output takes precedence over the fallback indentation, wrapping, whitespace, and brace examples below. Keep naming, documentation language, responsibility boundaries, and behavior requirements in force. Resolve conflicts explicitly rather than alternating between two incompatible layouts or changing formatter settings merely to make a check pass.
+
+The expanded multiline HTML text and sentence-boundary rules below are explicit Amplivec requirements, not optional formatter layout alternatives. If the selected formatter undoes them, report the profile conflict and resolve it without silently dropping these requirements or claiming a successful no-change check.
+
+Apply the coding conventions, run the matching formatter, inspect its edits, and verify the final saved files with the same formatter again. Do not undo its mechanical layout afterward. When the formatter is unavailable, reproduce the verified profile as closely as possible and report that automatic equivalence remains unverified; visual similarity alone is not proof.
 
 ## Naming Conventions
 
@@ -166,17 +178,17 @@ Code identifiers referenced from documentation must preserve their original Engl
 
 ## Indentation
 
-Use tabs for indentation.
+Use tabs for indentation as the default for programming languages and CSS, unless the effective project formatter profile requires otherwise.
 
 Each tab must represent an indentation width equivalent to 4 spaces.
 
-Do not replace indentation tabs with spaces.
+Do not replace indentation tabs with spaces merely for visual alignment. HTML uses two spaces per level by default; JSON and JSONC use the effective formatter's indentation (two spaces in the VS Code profile described in the reference). Do not apply the tab default mechanically to every file extension.
 
 Continuation indentation should remain consistent with the surrounding code and preserve the equivalent 4-space indentation level.
 
 ## Spaces
 
-Leave a space after commas.
+Leave a space after commas between items on the same line. When the formatter separates items across lines, use its line breaks instead; CSS selector lists are one such case.
 
 ```csharp
 Method(firstArgument, secondArgument);
@@ -609,22 +621,38 @@ Preserve semantics when wrapping expressions. In JavaScript, do not place a line
 
 ## Line Length
 
-Source code lines must not exceed the maximum line length defined by the Amplivec coding standards.
+Use the line-length or wrapping setting defined by the project and its effective formatter. This skill does not define a universal numeric maximum for all languages. Distinguish a formatter's wrapping target from a hard lint limit and from editor-only visual word wrapping.
 
-When a condition, method invocation, expression, declaration, or other statement would exceed that limit, split it across multiple lines while preserving readability and indentation.
+When a condition, method invocation, expression, declaration, or other statement exceeds a configured limit, split it across multiple lines while preserving readability, semantics, and formatter-compatible indentation. Preserve indivisible URLs, attribute values, literals, and other tokens when splitting would alter their meaning.
 
 Apply the blank-line rules for multiline statements to the resulting statement.
 
 Do not keep an excessively long condition on a single line.
 
+## CSS Formatting
+
+Use expanded declaration blocks, one declaration per line, and the effective formatter's indentation. Keep selectors, declaration order, values, specificity, and media-query behavior unchanged by formatting.
+
+For the built-in VS Code CSS profile described in [IDE formatter compatibility and verification](references/ide-formatting.md):
+
+- Put each comma-separated selector on its own line, including inside media queries.
+- Keep the opening brace beside the last selector and the closing brace on its own line.
+- Separate rules with one blank line.
+- Write selector combinators without surrounding spaces: `.field>label`, `.item+.item`, and `.item~.item`. Preserve descendant spaces such as `.field input`.
+- Do not apply selector-spacing rules to declaration values, strings, or arithmetic such as `calc(100% - 2 * var(--space-5))`.
+
+These are profile-specific mechanical rules. Follow a different verified project formatter profile when one is configured.
+
 ## HTML Formatting
 
 When creating, modifying, refactoring, or reviewing HTML documents or partials, read and apply [HTML formatting conventions](references/html-formatting.md).
 
-- Use two spaces per markup nesting level and per attribute or text continuation level. This is an HTML-specific exception to the general tab-indentation rule; it does not change indentation rules for other languages.
+- Use two spaces per markup nesting level and per attribute or text continuation level by default, subject to the effective formatter profile. This is an HTML-specific exception to the general tab-indentation rule; it does not change indentation rules for other languages.
 - Expand structural containers and separate independent controls, fields, navigation links, and repeated items into readable source lines. Make parent-child relationships visible through indentation.
 - Prefer separate opening and closing lines for expanded containers, with closing tags aligned to their opening element's indentation level.
-- Keep short text-only elements, coherent inline fragments, and empty paired elements compact when appropriate. Do not interpret the standard as an absolute prohibition on multiple tags appearing on one line.
+- Keep short text-only elements, coherent inline fragments, and empty paired elements compact when compatible with the rules below.
+- When a text container such as `p` spans multiple lines because it exceeds the effective line-length limit, put its opening tag on its own line, begin the text on the next line indented one level, and put the closing tag on its own line aligned with the opening tag. Use the same expanded layout when sentence separation makes the container multiline. Inline phrasing such as `strong` or `a` can remain within the text, as detailed in the HTML reference.
+- In ordinary HTML prose, start the next sentence on a new source line after each sentence-ending period, even if both sentences would fit on one line. Use a source newline, not `br` or another paragraph. Preserve closing inline tags and punctuation attached to the sentence, and do not split decimals, abbreviations, URLs, email addresses, or whitespace-sensitive content.
 - Wrap long opening tags between complete attributes, indent continuation lines by two spaces, and keep `>` with the final attribute. Do not require one attribute per line or invent a numeric line-length limit.
 - Use blank lines to separate major sections or logical groups, not every HTML element. Do not apply the blank-line rules for programming-language statements mechanically to markup.
 - Preserve rendered text, meaningful inline whitespace, attribute values, element order, and behavior when formatting. Formatting alone does not authorize changing copy, removing fallbacks, or modifying functionality.
@@ -637,6 +665,8 @@ When modifying existing code:
 2. Apply the standards to nearby code when necessary to keep the modified section consistent.
 3. Do not reformat unrelated files or unrelated sections solely to enforce these conventions.
 4. Preserve existing behavior unless the task explicitly requires behavioral changes.
+5. For a formatting/refactor task, verify whole-document formatting stability for all formattable files in scope. For a localized edit, do not silently broaden the task to unrelated formatting; report any existing whole-document drift that prevents that guarantee.
+6. Preserve the user's staged/unstaged separation. Compare formatter output in memory, through read-only checks, or in temporary copies when necessary; never stage, unstage, reset, or commit files merely to establish a formatting baseline.
 
 ## Code Review
 
@@ -645,3 +675,5 @@ When reviewing code, identify violations of these conventions when they affect c
 Distinguish style issues from functional defects.
 
 Do not describe a style violation as a functional bug.
+
+Require a no-change formatting check for the applicable IDE profile before claiming formatter compatibility. Passing syntax, build, lint, or functional tests does not establish that **Format Document** will produce no changes.
