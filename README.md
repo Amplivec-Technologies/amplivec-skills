@@ -24,7 +24,7 @@ Project-specific knowledge should remain in the corresponding product repository
 Add this repository as a Git submodule from the root of the project that will consume the shared resources:
 
 ```bash
-git submodule add https://github.com/mrmalvicino/amplivec-skills.git amplivec-skills
+git submodule add https://github.com/Amplivec-Technologies/amplivec-skills.git amplivec-skills
 ```
 
 The `amplivec-skills` argument is the destination directory within the consuming project.
@@ -34,7 +34,7 @@ Shared skills are available under `amplivec-skills/skills/`.
 If you use OpenCode, use `.opencode` as the submodule destination instead:
 
 ```bash
-git submodule add https://github.com/mrmalvicino/amplivec-skills .opencode
+git submodule add https://github.com/Amplivec-Technologies/amplivec-skills .opencode
 ```
 
 This makes the shared skills available under `.opencode/skills/` for OpenCode to discover. Use `.opencode` in place of `amplivec-skills` in the update commands below.
@@ -72,7 +72,7 @@ Standards are expected to change as Amplivec and its products mature.
 
 ## Contributing
 
-To add or modify skills, work in a separate clone of the [source repository](https://github.com/mrmalvicino/amplivec-skills), not in the submodule directory of a consuming project.
+To add or modify skills, work in a separate clone of the [source repository](https://github.com/Amplivec-Technologies/amplivec-skills), not in the submodule directory of a consuming project.
 Submit changes to the source repository first.
 Once merged, update the submodule reference in each consuming project as described in Setup.
 
